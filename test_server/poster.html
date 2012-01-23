@@ -1,0 +1,109 @@
+<html>
+	<head>
+	
+		<style>
+		body {
+			background-color: #ececec;
+			color: #565656;
+			font: 62.5% Helvetica, Arial, sans-serif;
+		}
+
+		.wrapper {
+			margin: 0 auto;
+			position: relative;
+			width: 420px;
+		}
+
+		h2 {
+			font-size: 2em;
+			margin: 25px 0 0;
+			text-align: center;
+		}
+	
+	
+		form#simple-form {
+			-moz-border-radius-bottomleft: 20px;
+			-moz-border-radius-bottomright: 20px;
+			-moz-border-radius-topleft: 20px;
+			-moz-border-radius-topright: 20px;
+			-moz-box-shadow: 2px 2px 10px #ccc;
+			-webkit-border-bottom-left-radius: 20px;
+			-webkit-border-bottom-right-radius: 20px;
+			-webkit-border-top-left-radius: 20px;
+			-webkit-border-top-right-radius: 20px;
+			-webkit-box-shadow: 2px 2px 10px #ccc;
+			background-color: #fff;
+			margin: 25px auto 0;
+			padding: 25px 10px;
+			text-align: center;
+			width: 460px;
+		}
+	
+		form#simple-form label {
+			display: block;
+			font-size: 1.65em;
+			font-weight: bold;
+			letter-spacing: -0.025em;
+			margin: 0 0 5px 15px;
+			text-align: left;
+
+		}
+
+		form#simple-form input#input, textarea#input{
+			-moz-border-radius-bottomleft: 20px;
+			-moz-border-radius-bottomright: 20px;
+			-moz-border-radius-topleft: 20px;
+			-moz-border-radius-topright: 20px;
+			-webkit-border-bottom-left-radius: 20px;
+			-webkit-border-bottom-right-radius: 20px;
+			-webkit-border-top-left-radius: 20px;
+			-webkit-border-top-right-radius: 20px;
+			background-color: #eaeaea;
+			background: -moz-linear-gradient(top, #ffffff, #eaeaea);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffff), color-stop(1.0, #eaeaea));
+			border: 1px solid #cacaca;
+			color: #444;
+			font-size: 1.4em;
+			margin: 0 0 25px;
+			padding: 8px 10px;
+			width: 440px;
+		}
+
+		form#simple-form input#submit {
+			-moz-border-radius-bottomleft: 32px;
+			-moz-border-radius-bottomright: 32px;
+			-moz-border-radius-topleft: 32px;
+			-moz-border-radius-topright: 32px;
+			-webkit-border-bottom-left-radius: 32px;
+			-webkit-border-bottom-right-radius: 32px;
+			-webkit-border-top-left-radius: 32px;
+			-webkit-border-top-right-radius: 32px;
+			background-color: #dedede;
+			background: -moz-linear-gradient(top, #ffffff, #eaeaea);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffff), color-stop(1.0, #dedede));
+			border: 1px solid #dedede;
+			color: #484848;
+			font-size: 1.65em;
+			font-weight: bold;
+			padding: 10px 15px;
+		}
+		</style>
+	</head>	
+	<body>
+		<div class="wrapper">
+			<form method="post" action="http://localhost:1000/pipe" id="simple-form">
+				<label for="project">Project:</label>
+				<input type="text" id="input" name="project" />
+				<br />
+				<label for="message">Message:</label>
+				<textarea style="height:200px" name="message" id="input"></textarea>
+				<br />
+				<input type="submit" value="Send to Sever" id="submit" />
+				<br />
+				<br />
+				<br />
+			</form>
+		</div>
+	</body>
+</html>
+
