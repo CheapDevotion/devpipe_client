@@ -17,7 +17,7 @@ var app = new Ext.Application({
 	    }
 	},
     launch: function () {
-		var viewport, data, page, menu, menuList, menuButton, pageToolbar, listToolbar, addProject, backButton, currentRecord, deleteButton, socket;
+		var viewport, data, page, menu, menuList, menuButton, pageToolbar, listToolbar, addProject, backButton, currentRecord, deleteButton, socket, inspector, showInspector;
 		data = new Ext.data.Store({
 		    model: Ext.regModel('', {
 				fields: [
@@ -144,6 +144,25 @@ var app = new Ext.Application({
 		    title: 'Projects',
 		    items: []
 		});
+		
+
+		inspector = new Ext.Panel({
+		    floating:true,
+		    width: 300,
+			height:400
+		});
+		inspector.hide();
+		
+		app.showInspector = function(caller){
+			var object, content;
+			object = JSON.parse(caller.getAttribute('object'));
+			for (i in object){
+				content += "<div class='inspector-text'>" + i + ": " + object[i] + "</div>";
+			}
+			console.log(content);
+			inspector.showBy(caller);
+			inspector.update(content)
+		}
 
 		page.addDocked(pageToolbar);
 		menu.addDocked(listToolbar);
@@ -204,14 +223,14 @@ var app = new Ext.Application({
 		socket = io.connect('http://' + ip + ':1001');
 		// Add a connect listener
 		socket.on('pipe', function (message) {
-			var timestamp, record, contentString;
+			var timestamp, record, contentString, clickFunction;
 			//Build timestamp for tagging message
 			timestamp =  "[" + new Date().toUTCString() + "]";
 			contentString = "<div class='message'><div class='timestamp'>" + timestamp + "</div>";
 			for (object in message.message){
 				console.log(typeof(message.message[object]));
 				if (typeof(message.message[object]) === "object"){
-					contentString += "<div class='text'>[Object (Needs Inspector)]</div>";
+					contentString += "<div onClick='app.showInspector(this)' class='text' object=" + JSON.stringify(message.message[object]) + ">[Object (Needs Inspector)]</div>";
 				}
 				else {
 					contentString += "<div class='text'>" + message.message[object] + "</div>";
