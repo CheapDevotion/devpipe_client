@@ -2,13 +2,20 @@
 	border-left: solid 1px black;
 }
 
+.message {
+	border: solid 2px black;
+	background-color:white;
+	margin-bottom:20px;
+}
+
 .text {
 	font-family: "Courier New";
 	font-size: 20px;
-	margin-bottom:10px;
+	margin:0 10px 0 10px;
 }
 
-.text span {
+.timestamp {
+	font-family: "Courier New";
 	font-weight:bold;
 	font-size:12px;
 }

@@ -1,7 +1,7 @@
 /*jslint undef: true, unparam: true, sloppy: true, maxerr: 50, indent: 4 */
 
 
-var io = require('socket.io').listen(8080);
+var io = require('socket.io').listen(1001);
 io.configure(function () {
 	io.set('transports', ['jsonp-polling']);
 });
@@ -11,7 +11,7 @@ io.configure(function () {
 var express = require('express');
 
 function broadcastMessage(project, message) {
-	io.sockets.emit('pipe', {project: project, message: message});
+	io.sockets.emit('pipe', {project: project, message: JSON.parse(message)});
 }
 
 io.sockets.on('connection', function (socket) {

@@ -201,24 +201,35 @@ var app = new Ext.Application({
 		};
 
 		// Create SocketIO instance, connect
-		socket = io.connect('http://' + ip + ':8080');
+		socket = io.connect('http://' + ip + ':1001');
 		// Add a connect listener
 		socket.on('pipe', function (message) {
-			var timestamp, record;
+			var timestamp, record, contentString;
 			//Build timestamp for tagging message
 			timestamp =  "[" + new Date().toUTCString() + "]";
+			contentString = "<div class='message'><div class='timestamp'>" + timestamp + "</div>";
+			for (object in message.message){
+				console.log(typeof(message.message[object]));
+				if (typeof(message.message[object]) === "object"){
+					contentString += "<div class='text'>[Object (Needs Inspector)]</div>";
+				}
+				else {
+					contentString += "<div class='text'>" + message.message[object] + "</div>";
+				}
+			}
+			contentString += "</div>";
 
 			//Check if the project already exists
 			record = data.findRecord('project', message.project, 0, false, false, true);
 			if (record) {
-				record.data.content += "<div class='text'><span>" + timestamp + "  </span>" + message.message + "</div>";
+				record.data.content += contentString;
 				record.dirty = true;
 				data.sync();
 				if (record === currentRecord) {
 					page.update(record.data.content);
 				}
 			} else {
-				data.add({project: message.project, content: "<div class='text'><span>" + timestamp + "  </span>" + message.message + "</div>"});
+				data.add({project: message.project, content: contentString});
 			}
 			data.save();
 		});
