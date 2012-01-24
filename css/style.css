@@ -2,14 +2,12 @@ ul.inspector, ul.inspector ul {
 	font-family: "Courier New";
 	font-size: 20px;
 	list-style-type: none;
-	background: url(vline.png) repeat-y;
 	margin: 0;
 	padding: 0;
  }
  
  ul.inspector ul {
-	color:grey;
-	margin-left: 40px;
+	margin-left: 20px;
  }
 
  ul.inspector li {

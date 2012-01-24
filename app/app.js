@@ -144,51 +144,48 @@ var app = new Ext.Application({
 		    title: 'Projects',
 		    items: []
 		});
-		
 
 		inspector = new Ext.Panel({
-		    floating:true,
-		    width: 300,
-			height:400,
-			dockedItems:[{xtype: 'toolbar', title: 'Object Inspector'}]
+		    floating: true,
+			height: 400,
+			dockedItems: [{xtype: 'toolbar', title: 'Object Inspector'}]
 		});
 		inspector.hide();
-		
-		app.showInspector = function(caller){
-			var object, content = "<ul class='inspector'>", depth = 0, lastDepth = 0;
+
+		app.showInspector = function (caller) {
+			var object, content = "<ul class='inspector'>", depth = 0, lastDepth = 0, process, traverse;
 			object = JSON.parse(caller.getAttribute('object'));
-			traverse(object,process);
+			traverse(object, process);
 			content += "</ul>";
 			inspector.showBy(caller);
-			inspector.update(content)
-			
-			function process(key,value) {
+			inspector.update(content);
+
+			process = function (key, value) {
 			    lastDepth = depth;
-				if (typeof(value) === "object"){
-					content += "<li><strong>" + key + "</strong></li>";
+				if (typeof (value) === "object") {
+					content += "<li><strong style='color:red'>" + key + "</strong></li>";
 					content += "<ul>";
-				}
-				else {
-					if (depth === 1 && lastDepth > 1){
+				} else {
+					if (depth === 1 && lastDepth > 1) {
 						content += "</ul>";
 					}
 					content += "<li><strong>" + key + "</strong>: " + value + "</li>";
 				}
-			}
+			};
 
-			function traverse(o,func) {
-			    for (i in o) {
+			traverse = function (object, func) {
+			    for (o in object) {
 					depth++;
-			        func.apply(this,[i,o[i]]);  
-			        if (typeof(o[i])=="object") {
+			        func.apply(this,[o,object[o]]);  
+			        if (typeof (object[o]) === "object") {
 			            //going on step down in the object tree!!
-			            traverse(o[i],func);
+			            traverse(object[o], func);
 			        } else {
 						depth--;
 					}
 			    }
-			}
-		}
+			};
+		};
 
 		page.addDocked(pageToolbar);
 		menu.addDocked(listToolbar);
@@ -255,10 +252,9 @@ var app = new Ext.Application({
 			contentString = "<div class='message'><div class='timestamp'>" + timestamp + "</div>";
 			for (object in message.message){
 				console.log(message.message[object]);
-				if (typeof(message.message[object]) === "object"){
+				if (typeof (message.message[object]) === "object"){
 					contentString += "<div onClick='app.showInspector(this)' class='object' object=" + JSON.stringify(message.message[object]) + ">Object</div>";
-				}
-				else {
+				} else {
 					contentString += "<div class='text'>" + message.message[object] + "</div>";
 				}
 			}
