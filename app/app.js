@@ -149,12 +149,13 @@ var app = new Ext.Application({
 		inspector = new Ext.Panel({
 		    floating:true,
 		    width: 300,
-			height:400
+			height:400,
+			dockedItems:[{xtype: 'toolbar', title: 'Object Inspector'}]
 		});
 		inspector.hide();
 		
 		app.showInspector = function(caller){
-			var object, content;
+			var object, content = "";
 			object = JSON.parse(caller.getAttribute('object'));
 			for (i in object){
 				content += "<div class='inspector-text'>" + i + ": " + object[i] + "</div>";
@@ -228,9 +229,9 @@ var app = new Ext.Application({
 			timestamp =  "[" + new Date().toUTCString() + "]";
 			contentString = "<div class='message'><div class='timestamp'>" + timestamp + "</div>";
 			for (object in message.message){
-				console.log(typeof(message.message[object]));
+				console.log(message.message[object]);
 				if (typeof(message.message[object]) === "object"){
-					contentString += "<div onClick='app.showInspector(this)' class='text' object=" + JSON.stringify(message.message[object]) + ">[Object (Needs Inspector)]</div>";
+					contentString += "<div onClick='app.showInspector(this)' class='object' object=" + JSON.stringify(message.message[object]) + ">Object</div>";
 				}
 				else {
 					contentString += "<div class='text'>" + message.message[object] + "</div>";

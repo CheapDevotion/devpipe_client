@@ -20,6 +20,32 @@
 	padding: 10px 15px;
 }
 
+.object {
+	font-family: "Courier New";
+	font-size: 20px;
+	width:200px;
+	-moz-border-radius-bottomleft: 32px;
+	-moz-border-radius-bottomright: 32px;
+	-moz-border-radius-topleft: 32px;
+	-moz-border-radius-topright: 32px;
+	-webkit-border-bottom-left-radius: 32px;
+	-webkit-border-bottom-right-radius: 32px;
+	-webkit-border-top-left-radius: 32px;
+	-webkit-border-top-right-radius: 32px;
+	background-color: #416086;
+	background: -moz-linear-gradient(top, #416086, #2a3f58);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #416086), color-stop(1.0, #2a3f58));
+	border: 1px solid #dedede;
+	color:#ffffff;
+	padding: 5px 5px;
+}
+
+.object:hover{
+	background-color: #416086;
+	background: -moz-linear-gradient(top, #6493cb, #446790);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6493cb), color-stop(1.0, #446790));
+}
+
 .text {
 	font-family: "Courier New";
 	font-size: 20px;
