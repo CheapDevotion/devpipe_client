@@ -19,6 +19,11 @@ ul.inspector, ul.inspector ul {
    font-weight:bold;
  }
 
+.inspector-panel {
+	padding:10px;
+	width:500px;
+}
+
 .page {
 	border-left: solid 1px black;
 }
@@ -44,7 +49,7 @@ ul.inspector, ul.inspector ul {
 .object {
 	font-family: "Courier New";
 	font-size: 20px;
-	width:200px;
+	display:table;
 	-moz-border-radius-bottomleft: 32px;
 	-moz-border-radius-bottomright: 32px;
 	-moz-border-radius-topleft: 32px;
@@ -58,7 +63,7 @@ ul.inspector, ul.inspector ul {
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #416086), color-stop(1.0, #2a3f58));
 	border: 1px solid #dedede;
 	color:#ffffff;
-	padding: 5px 5px;
+	padding: 5px 20px 5px 20px;
 }
 
 .object:hover{

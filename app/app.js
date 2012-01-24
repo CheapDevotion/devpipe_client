@@ -146,21 +146,25 @@ var app = new Ext.Application({
 		});
 
 		inspector = new Ext.Panel({
+			cls: 'inspector-panel',
 		    floating: true,
 			height: 400,
+			scroll: 'both',
 			dockedItems: [{xtype: 'toolbar', title: 'Object Inspector'}]
 		});
 		inspector.hide();
 
 		app.showInspector = function (caller) {
-			var object, content = "<ul class='inspector'>", depth = 0, lastDepth = 0, process, traverse;
-			object = JSON.parse(caller.getAttribute('object'));
+			var object, content = "<ul class='inspector'>", depth = 0, lastDepth = 0;
+			object = unescape(caller.getAttribute('object'));
+			object = JSON.parse(object);
+			console.log(object);
 			traverse(object, process);
 			content += "</ul>";
 			inspector.showBy(caller);
 			inspector.update(content);
 
-			process = function (key, value) {
+			function process(key, value) {
 			    lastDepth = depth;
 				if (typeof (value) === "object") {
 					content += "<li><strong style='color:red'>" + key + "</strong></li>";
@@ -173,7 +177,7 @@ var app = new Ext.Application({
 				}
 			};
 
-			traverse = function (object, func) {
+			function traverse(object, func) {
 			    for (o in object) {
 					depth++;
 			        func.apply(this,[o,object[o]]);  
@@ -251,11 +255,10 @@ var app = new Ext.Application({
 			timestamp =  "[" + new Date().toUTCString() + "]";
 			contentString = "<div class='message'><div class='timestamp'>" + timestamp + "</div>";
 			for (object in message.message){
-				console.log(message.message[object]);
 				if (typeof (message.message[object]) === "object"){
-					contentString += "<div onClick='app.showInspector(this)' class='object' object=" + JSON.stringify(message.message[object]) + ">Object</div>";
+					contentString += "<div onClick='app.showInspector(this)' class='object' object=" + escape(JSON.stringify(message.message[object])) + ">" + object + "</div>";
 				} else {
-					contentString += "<div class='text'>" + message.message[object] + "</div>";
+					contentString += "<div class='text'><strong>" + object + "</strong>: " + message.message[object] + "</div>";
 				}
 			}
 			contentString += "</div>";
