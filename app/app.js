@@ -155,14 +155,39 @@ var app = new Ext.Application({
 		inspector.hide();
 		
 		app.showInspector = function(caller){
-			var object, content = "";
+			var object, content = "<ul class='inspector'>", depth = 0, lastDepth = 0;
 			object = JSON.parse(caller.getAttribute('object'));
-			for (i in object){
-				content += "<div class='inspector-text'>" + i + ": " + object[i] + "</div>";
-			}
-			console.log(content);
+			traverse(object,process);
+			content += "</ul>";
 			inspector.showBy(caller);
 			inspector.update(content)
+			
+			function process(key,value) {
+			    lastDepth = depth;
+				if (typeof(value) === "object"){
+					content += "<li><strong>" + key + "</strong></li>";
+					content += "<ul>";
+				}
+				else {
+					if (depth === 1 && lastDepth > 1){
+						content += "</ul>";
+					}
+					content += "<li><strong>" + key + "</strong>: " + value + "</li>";
+				}
+			}
+
+			function traverse(o,func) {
+			    for (i in o) {
+					depth++;
+			        func.apply(this,[i,o[i]]);  
+			        if (typeof(o[i])=="object") {
+			            //going on step down in the object tree!!
+			            traverse(o[i],func);
+			        } else {
+						depth--;
+					}
+			    }
+			}
 		}
 
 		page.addDocked(pageToolbar);
