@@ -18,14 +18,14 @@ var app = new Ext.Application({
 	},
     launch: function () {
 		var viewport, data, page, menu, menuList, menuButton, pageToolbar, listToolbar, addProject, backButton, currentRecord, deleteButton, socket, inspector, showInspector;
+		
+		//Setup the data store. One record per project.
 		data = new Ext.data.Store({
 		    model: Ext.regModel('', {
 				fields: [
 		            {name: 'id', type: 'int'},
 		            {name: 'project', type: 'string'},
-					{name: 'timestamp', type: 'date'},
-					{name: 'source', type: 'string'},
-					{name: 'content', type: 'string'},
+					{name: 'content'},
 				],
 				proxy: {
 					type: 'localstorage',
@@ -33,6 +33,7 @@ var app = new Ext.Application({
 				}
 			}),
 			data: [],
+			groupField: 'project',
 			storeId: 'projects'
 
 		});
@@ -58,14 +59,19 @@ var app = new Ext.Application({
 		    allowDeselect: false,
 		    singleSelect: true
 		});
-
+		
+		//This event is called when the user selects a new list item - we update the page accordingly.
 		menuList.addListener('selectionchange', function (model, records) {
 		    if (records[0]) {
+				var content = "";
 				deleteButton.show();
 				currentRecord = records[0];
 		        viewport.setActiveItem(page, {type: 'slide', direction: 'left'});
 				pageToolbar.setTitle(records[0].data.project);
-		        page.update(records[0].data.content);
+				for (i=0;i<records[0].data.content.length;i++){
+					content += records[0].data.content[i].text;
+				}
+		        page.update(content);
 				if (app.getProfile() === 'portraitPhone') {
 					backButton.show();
 				}
@@ -155,7 +161,8 @@ var app = new Ext.Application({
 			dockedItems: [{xtype: 'toolbar', title: 'Object Inspector'}]
 		});
 		inspector.hide();
-
+		
+		//Globally accessible function for showing the inspected. Couldn't figure out a better way...
 		app.showInspector = function (caller) {
 			var object, content = "<ul class='inspector'>", depth = 0, lastDepth = 0;
 			object = unescape(caller.getAttribute('object'));
@@ -166,6 +173,7 @@ var app = new Ext.Application({
 			inspector.showBy(caller);
 			inspector.update(content);
 
+			//These two functions convert an object to a list. A little rough, but gets the job done.
 			function process(key, value) {
 			    lastDepth = depth;
 				if (typeof (value) === "object") {
@@ -178,7 +186,6 @@ var app = new Ext.Application({
 					content += "<li><strong>" + key + "</strong>: " + value + "</li>";
 				}
 			};
-
 			function traverse(object, func) {
 			    for (o in object) {
 					depth++;
@@ -252,7 +259,7 @@ var app = new Ext.Application({
 		socket = io.connect('http://' + ip + ':1001');
 		// Add a connect listener
 		socket.on('pipe', function (message) {
-			var timestamp, record, contentString, clickFunction;
+			var timestamp, record, contentString, clickFunction, content, text;
 			//Build timestamp for tagging message
 			timestamp =  "[" + new Date().toUTCString() + "]";
 			contentString = "<div class='message'><div class='timestamp'>" + timestamp + "</div>";
@@ -264,18 +271,27 @@ var app = new Ext.Application({
 				}
 			}
 			contentString += "</div>";
+			
+			//Create a content object that will be added to the main array.
+			content = {text: contentString, timestamp: new Date(), source: null}
 
 			//Check if the project already exists
 			record = data.findRecord('project', message.project, 0, false, false, true);
 			if (record) {
-				record.data.content += contentString;
+				record.data.content.push(content);
 				record.dirty = true;
 				data.sync();
 				if (record === currentRecord) {
-					page.update(record.data.content);
+					for (i=0;i<record.data.content.length;i++){
+						text += record.data.content[i].text;
+					}
+			        page.update(text);
 				}
 			} else {
-				data.add({project: message.project, content: contentString});
+				//Create our array if one doesn't already exist, and add our content object.
+				var record = [];
+				record.push(content);
+				data.add({project: message.project, content: record});
 			}
 			data.save();
 		});
