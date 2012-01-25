@@ -187,7 +187,7 @@ var app = new Ext.Application({
 				}
 			};
 			function traverse(object, func) {
-			    for (o in object) {
+			    for (o=0;o<object.length;o++) {
 					depth++;
 			        func.apply(this,[o,object[o]]);  
 			        if (typeof (object[o]) === "object") {
