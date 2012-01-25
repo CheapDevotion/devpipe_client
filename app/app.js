@@ -23,6 +23,8 @@ var app = new Ext.Application({
 				fields: [
 		            {name: 'id', type: 'int'},
 		            {name: 'project', type: 'string'},
+					{name: 'timestamp', type: 'date'},
+					{name: 'source', type: 'string'},
 					{name: 'content', type: 'string'},
 				],
 				proxy: {
