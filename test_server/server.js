@@ -23,8 +23,9 @@ io.sockets.on('connection', function (socket) {
 var app = express.createServer();
 app.use(express.bodyParser());
 
-app.post('/pipe', function (req, res) {
-	broadcastMessage(req.body.project, req.body.message);
+app.post('/project/:project', function (req, res) {
+	console.log(req);
+	broadcastMessage(req.params.project, req.body.message);
 	res.send('status: ok');
 });
 
