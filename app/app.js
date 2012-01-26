@@ -164,40 +164,69 @@ var app = new Ext.Application({
 		
 		//Globally accessible function for showing the inspected. Couldn't figure out a better way...
 		app.showInspector = function (caller) {
-			var object, content = "<ul class='inspector'>", depth = 0, lastDepth = 0;
+			var object, content = "<ul class='inspector'>", length;
 			object = unescape(caller.getAttribute('object'));
 			object = JSON.parse(object);
-			console.log(object);
-			traverse(object, process);
+			traverse(object);
 			content += "</ul>";
 			inspector.showBy(caller);
 			inspector.update(content);
-
+			
 			//These two functions convert an object to a list. A little rough, but gets the job done.
+			/*
 			function process(key, value) {
-			    lastDepth = depth;
 				if (typeof (value) === "object") {
-					content += "<li><strong style='color:red'>" + key + "</strong></li>";
-					content += "<ul>";
+					if (value.length === 0){
+						return;
+					}
+					else {
+						length += 
+						content += "<li><strong style='color:red'>" + key + "</strong></li>";
+						content += "<ul>";
+					}					
 				} else {
-					if (depth === 1 && lastDepth > 1) {
+					length--;
+					if (length <= 0) {
+						console.log("Close it");
 						content += "</ul>";
 					}
-					content += "<li><strong>" + key + "</strong>: " + value + "</li>";
-				}
-			};
-			function traverse(object, func) {
-			    for (o=0;o<object.length;o++) {
-					depth++;
-			        func.apply(this,[o,object[o]]);  
-			        if (typeof (object[o]) === "object") {
-			            //going on step down in the object tree!!
-			            traverse(object[o], func);
-			        } else {
-						depth--;
-					}
+					content += "<li><strong>" + key + "</strong>: " + value + "</li>"; 
+				} 
+			}
+			*/
+			function tree(key, value) {    
+			    if (typeof(value) == 'object') {
+			        content += "<ul>";
+			        for (var i in value) {
+			            content += "<li><strong style='color:red'>" + value[i] + "</strong></li>";
+			           // tree(i, da);            
+			        }
+			        content += "</ul>";
+			    } else {
+			        content += "<li><strong>" + key + "</strong>: " + value + "</li>"; 
 			    }
-			};
+			}
+			function traverse(object) {
+			    for (o in object) {
+					if (object.hasOwnProperty(o)) {
+				        if (typeof (object[o]) === "object") {
+							if (object[o].length != 0){
+								
+								content += "<li><strong style='color:red'>" + o + "</strong></li>";
+								content += "<ul>";
+								for (i in object[o]) {
+									traverse(object[o]);       
+								}
+								content += "</ul>";
+							}
+				        } else {
+							content += "<li><strong>" + o + "</strong>: " + object[o] + "</li>"; 
+						}
+					} 
+				}
+			}
+			
+			
 		};
 
 		page.addDocked(pageToolbar);
@@ -288,7 +317,7 @@ var app = new Ext.Application({
 			        page.update(text);
 				}
 			} else {
-				//Create our array if one doesn't already exist, and add our content object.
+				//Create our array if one doesn't already exist, and add our content object
 				var record = [];
 				record.push(content);
 				data.add({project: message.project, content: record});
