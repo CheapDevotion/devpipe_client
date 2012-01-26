@@ -171,47 +171,12 @@ var app = new Ext.Application({
 			content += "</ul>";
 			inspector.showBy(caller);
 			inspector.update(content);
-			
-			//These two functions convert an object to a list. A little rough, but gets the job done.
-			/*
-			function process(key, value) {
-				if (typeof (value) === "object") {
-					if (value.length === 0){
-						return;
-					}
-					else {
-						length += 
-						content += "<li><strong style='color:red'>" + key + "</strong></li>";
-						content += "<ul>";
-					}					
-				} else {
-					length--;
-					if (length <= 0) {
-						console.log("Close it");
-						content += "</ul>";
-					}
-					content += "<li><strong>" + key + "</strong>: " + value + "</li>"; 
-				} 
-			}
-			*/
-			function tree(key, value) {    
-			    if (typeof(value) == 'object') {
-			        content += "<ul>";
-			        for (var i in value) {
-			            content += "<li><strong style='color:red'>" + value[i] + "</strong></li>";
-			           // tree(i, da);            
-			        }
-			        content += "</ul>";
-			    } else {
-			        content += "<li><strong>" + key + "</strong>: " + value + "</li>"; 
-			    }
-			}
+
 			function traverse(object) {
 			    for (o in object) {
 					if (object.hasOwnProperty(o)) {
 				        if (typeof (object[o]) === "object") {
 							if (object[o].length != 0){
-								
 								content += "<li><strong style='color:red'>" + o + "</strong></li>";
 								content += "<ul>";
 								for (i in object[o]) {
@@ -311,8 +276,8 @@ var app = new Ext.Application({
 				record.dirty = true;
 				data.sync();
 				if (record === currentRecord) {
-					for (i=0;i<record.data.content.length;i++){
-						text += record.data.content[i].text;
+					for (t in record.data.content){
+						text += t.text;
 					}
 			        page.update(text);
 				}
