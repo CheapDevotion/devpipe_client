@@ -25,6 +25,7 @@ var app = express.createServer();
 app.use(express.bodyParser());
 
 app.post('/project/:project', function (req, res) {
+	res.header("Access-Control-Allow-Origin", "*");
 	var project = req.params.project.replace(/_/g, " ");
 	project = project.capitalize();
 	project = project.addSpaces();

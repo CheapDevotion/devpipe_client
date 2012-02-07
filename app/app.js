@@ -17,7 +17,9 @@ var app = new Ext.Application({
 	    }
 	},
     launch: function () {
-		var viewport, data, page, menu, menuList, menuButton, pageToolbar, listToolbar, addProject, backButton, currentRecord, deleteButton, socket, inspector, showInspector;
+		var viewport, data, page, menu, menuList, menuButton, pageToolbar, 
+		listToolbar, addProject, backButton, currentRecord, deleteButton, 
+		socket, inspector, showInspector, inspectorUp = false;
 		
 		//Setup the data store. One record per project.
 		data = new Ext.data.Store({
@@ -92,7 +94,11 @@ var app = new Ext.Application({
 		});
 
 		backButton.addListener('tap', function () {
-		    viewport.setActiveItem(menu, {type: 'slide', direction: 'right'});
+			if (!inspectorUp){
+		    	viewport.setActiveItem(menu, {type: 'slide', direction: 'right'});
+			} else {
+				viewport.setActiveItem(page, {type: 'slide', direction: 'right'});
+			}
 		    this.hide();
 		});
 
@@ -158,6 +164,7 @@ var app = new Ext.Application({
 		    floating: true,
 			height: 400,
 			scroll: 'both',
+			items: [backButton],
 			dockedItems: [{xtype: 'toolbar', title: 'Object Inspector'}]
 		});
 		inspector.hide();
@@ -169,7 +176,12 @@ var app = new Ext.Application({
 			object = JSON.parse(object);
 			traverse(object);
 			content += "</ul>";
-			inspector.showBy(caller);
+			if (this.getProfile() === "landscapePhone" || this.getProfile() === "portraitPhone"){
+				inspectorUp = true;
+				viewport.setActiveItem(inspector, {type: 'slide', direction: 'left'});
+			} else {
+				inspector.showBy(caller);
+			}
 			inspector.update(content);
 
 			function traverse(object) {
@@ -248,20 +260,28 @@ var app = new Ext.Application({
 		        this.hide();
 		    }
 		};
+		
+		inspector.setProfile = function (profile) {
+			if (profile === "landscapePhone" || profile === "portraitPhone"){
+				this.setFloating(false);
+			}
+		}
 
 		// Create SocketIO instance, connect
 		socket = io.connect('http://' + ip + ':1001');
 		// Add a connect listener
 		socket.on('pipe', function (message) {
-			var timestamp, record, contentString, clickFunction, content, text;
+			var timestamp, record, contentString, clickFunction, content, text = "";
 			//Build timestamp for tagging message
 			timestamp =  "[" + new Date().toUTCString() + "]";
 			contentString = "<div class='message'><div class='timestamp'>" + timestamp + "</div>";
 			for (object in message.message){
-				if (typeof (message.message[object]) === "object"){
-					contentString += "<div onClick='app.showInspector(this)' class='object' object=" + escape(JSON.stringify(message.message[object])) + ">" + object + "</div>";
-				} else {
-					contentString += "<div class='text'><strong>" + object + "</strong>: " + message.message[object] + "</div>";
+				if (message.message.hasOwnProperty(object)){
+					if (typeof (message.message[object]) === "object"){
+						contentString += "<div onClick='app.showInspector(this)' class='object' object=" + escape(JSON.stringify(message.message[object])) + ">" + object + "</div>";
+					} else {
+						contentString += "<div class='text'><strong>" + object + "</strong>: " + message.message[object] + "</div>";
+					}
 				}
 			}
 			contentString += "</div>";
@@ -276,8 +296,8 @@ var app = new Ext.Application({
 				record.dirty = true;
 				data.sync();
 				if (record === currentRecord) {
-					for (t in record.data.content){
-						text += t.text;
+					for (i=0;i<record.data.content.length;i++){
+						text += record.data.content[i].text;
 					}
 			        page.update(text);
 				}
