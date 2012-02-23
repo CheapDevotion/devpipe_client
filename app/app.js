@@ -1,4 +1,12 @@
 /*jslint undef: true, unparam: true, sloppy: true, maxerr: 50, indent: 4 */
+String.prototype.capitalize = function(){
+   return this.replace( /(^|\s)([a-z])/g , function(m,p1,p2){ return p1+p2.toUpperCase(); } );
+  };
+
+String.prototype.addSpaces = function(){
+   return this.replace(/([a-z])([A-Z])/g, '$1 $2');
+  };
+
 
 var app = new Ext.Application({
 	name : 'devpipe',
@@ -35,7 +43,6 @@ var app = new Ext.Application({
 				}
 			}),
 			data: [],
-			groupField: 'project',
 			storeId: 'projects'
 
 		});
@@ -305,9 +312,12 @@ var app = new Ext.Application({
 				//Create our array if one doesn't already exist, and add our content object
 				var record = [];
 				record.push(content);
-				data.add({project: message.project, content: record});
+				data.add({project: message.project.split("_").join(" ").capitalize(), content: record});
 			}
 			data.save();
+			//data.sort('id', 'DESC');
 		});
     }
 });
+
+
